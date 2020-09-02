@@ -1,0 +1,77 @@
+
+***Note*:** *This problems make uses of the element-to-element property of operations on numeric vectors to calculate pattern summation.* 
+
+***How to do it?***: 
+
+
+- Right under each question, insert  a code chunk (you can use the hotkey `Ctrl + Alt + I` to add a code chunk) and code the solution for the question. 
+
+- `Knit` the rmarkdown file (hotkey: `Ctrl + Alt + K`) to export an html.  
+
+-  Publish the html file to your Githiub Page. 
+
+***Sample Codes***: You can find similar codes for this assignment here [link](fa2020_assignment2_sample_code.html)
+
+
+***Submissions***: Submit the link on Github of the assignment to Blackboard under Assignment 2. 
+
+
+Problems
+-------
+-------
+
+
+1. Calculate: 
+
+
+$$
+S = 1 + 4 + 7 + 11 +... + 100
+$$
+```{r}
+x <- seq(1,101,3)
+sum(x)
+```
+
+2. Calculate: 
+
+
+$$
+S = 1^{2020} + 2^{2020} + 3^{2020} +...+2020^{2020}
+$$
+```{r}
+s <- c(1:2020)
+sum(s^2020)
+```
+
+3. Calculate: 
+
+$$
+S = \frac{1}{1\cdot 2}+\frac{1}{2 \cdot 3}+...+\frac{1}{2020\cdot 2021}
+$$
+```{r}
+a <- c(1:2020)
+b <- c(2:2021)
+sum(1/(a*b))
+```
+
+4. Calculate: 
+
+$$
+S = \frac{1}{1\cdot 2 \cdot 3}+\frac{1}{2 \cdot 3 \cdot 4}+...+\frac{1}{2020\cdot 2021 \cdot 2022}
+$$
+```{r}
+l <- c(1:2020)
+m <- c(2:2021)
+n <- c(3:2022)
+sum(1/(l*m*n))
+```
+
+5. Calculate: 
+
+$$
+S = 1^1 + 3^3 + 5^5 + 7^7 +....+2021^{2021}
+$$
+```{r}
+e <- seq(1,2021,2)
+sum(e^e)
+```
