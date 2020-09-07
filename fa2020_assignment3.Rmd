@@ -48,17 +48,9 @@ library(lubridate)
 
 4. Correct the types of the variables that are mismatched type.
 ```{r}
-class(df$Date_reported)
-class(df$Country_code)
-class(df$Country)
-class(df$WHO_region)
-class(df$New_cases)
-class(df$Cumulative_cases)
-class(df$New_deaths)
-class(df$Cumulative_deaths)
+str(df)
 
-df$date <- ymd(df$date_reported)
-class(df$date_reported)
+
 ```
 
 
