@@ -1,0 +1,109 @@
+---
+title: "Assignment 3"
+author: "Kathryn Doorley"
+date: "September 2, 2020"
+---
+***Note*:** *This assignment practices working with Data Frame using Base R.*
+
+***How to do it?***: 
+
+- Open the Rmarkdown file of this assignment ([link](fa2020_assignment3.Rmd)) in Rstudio. 
+
+- Right under each question, insert  a code chunk (you can use the hotkey `Ctrl + Alt + I` to add a code chunk) and code the solution for the question. 
+
+- `Knit` the rmarkdown file (hotkey: `Ctrl + Alt + K`) to export an html.  
+
+-  Publish the html file to your Githiub Page. 
+
+***Submission***: Submit the link on Github of the assignment to Blackboard under Assignment 3. 
+
+-------
+
+Problems
+-------
+ \
+
+1. Use `read.csv` to import the Covid19 data from WHO: https://covid19.who.int/WHO-COVID-19-global-data.csv
+```{r}
+df <- read.csv('https://covid19.who.int/WHO-COVID-19-global-data.csv')
+```
+
+
+2. How many columns and rows the data have? How many categorical variables the data have? 
+```{r}
+#39001 rows and 8 cols
+str(df)
+```
+
+
+3. How many missing values are there?  Show the missing values by columns.  What variable has the most number of missing values?
+
+```{r}
+colSums(is.na(df))
+```
+```{r}
+library(lubridate)
+```
+
+
+4. Correct the types of the variables that are mismatched type.
+```{r}
+class(df$Date_reported)
+class(df$Country_code)
+class(df$Country)
+class(df$WHO_region)
+class(df$New_cases)
+class(df$Cumulative_cases)
+class(df$New_deaths)
+class(df$Cumulative_deaths)
+
+df$date <- ymd(df$date_reported)
+class(df$date_reported)
+```
+
+
+5. Find the daily average number of cases globally.
+```{r}
+mean(df$New_cases)
+```
+
+
+6. Find the maximum cases a day.  
+```{r}
+max(df$New_cases)
+```
+
+7. Which country at which date has the maximum number of cases a day? *Hint:  use the `which.max` function to find the index of the row that contains the maximum number of cases. Then from the row index, find that country and the date. *
+```{r}
+which.max(df$New_cases)
+df[16888,]
+```
+
+8.  How many WHO's region there are in the data?
+```{r}
+table(df$WHO_region)
+```
+
+
+9.  Find the daily average cases in EUROPE. Find the daily average cases by regions.
+```{r}
+d1=df[(df$WHO_region=="EURO"),]
+mean(d1$New_cases)
+
+```
+
+
+10. Find the daily average number of cases in the US in the last 5 days. 
+
+```{r}
+d1 = df[(Sys.Date()- df$date_reported<7),]
+mean(d1)
+```
+
+11. Which day of the week has the most number of cases in South East Asia (SEARO region)?
+```{r}
+d1=df[(df$WHO_region=="SEARO"),]
+max(d1$New_cases)
+df[78761,]
+```
+
