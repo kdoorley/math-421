@@ -33,6 +33,8 @@ df <- read.csv('https://covid19.who.int/WHO-COVID-19-global-data.csv')
 ```{r}
 #39001 rows and 8 cols
 str(df)
+
+#who, country code, country, and date are categorical
 ```
 
 
@@ -50,7 +52,12 @@ library(lubridate)
 ```{r}
 str(df)
 
+df$ï..Date_reported <- ymd(df$ï..Date_reported)
 
+class(df$ï..Date_reported)
+```
+```{r}
+df$day <- wday(df$ï..Date_reported)
 ```
 
 
@@ -81,6 +88,7 @@ table(df$WHO_region)
 ```{r}
 d1=df[(df$WHO_region=="EURO"),]
 mean(d1$New_cases)
+by(df$New_cases, df$WHO_region, mean)
 
 ```
 
@@ -88,14 +96,15 @@ mean(d1$New_cases)
 10. Find the daily average number of cases in the US in the last 5 days. 
 
 ```{r}
-d1 = df[(Sys.Date()- df$date_reported<7),]
-mean(d1)
+d1 = df[(df$Country=='United States of America') & (Sys.Date()- df$date<6),]
+mean(d1$New_cases)
 ```
 
 11. Which day of the week has the most number of cases in South East Asia (SEARO region)?
 ```{r}
-d1=df[(df$WHO_region=="SEARO"),]
-max(d1$New_cases)
-df[78761,]
+df2=df[(df$WHO_region=="SEARO"),]
+by(df2$New_cases, df2$day, mean)
+
+#monday does (~2545 every monday)
 ```
 

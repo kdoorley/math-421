@@ -393,7 +393,7 @@ summary {
 </ol>
 <pre class="r"><code>#39001 rows and 8 cols
 str(df)</code></pre>
-<pre><code>## &#39;data.frame&#39;:    40081 obs. of  8 variables:
+<pre><code>## &#39;data.frame&#39;:    40297 obs. of  8 variables:
 ##  $ ï..Date_reported : chr  &quot;2020-02-24&quot; &quot;2020-02-25&quot; &quot;2020-02-26&quot; &quot;2020-02-27&quot; ...
 ##  $ Country_code     : chr  &quot;AF&quot; &quot;AF&quot; &quot;AF&quot; &quot;AF&quot; ...
 ##  $ Country          : chr  &quot;Afghanistan&quot; &quot;Afghanistan&quot; &quot;Afghanistan&quot; &quot;Afghanistan&quot; ...
@@ -402,12 +402,13 @@ str(df)</code></pre>
 ##  $ Cumulative_cases : int  5 5 5 5 5 5 5 5 5 5 ...
 ##  $ New_deaths       : int  0 0 0 0 0 0 0 0 0 0 ...
 ##  $ Cumulative_deaths: int  0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+<pre class="r"><code>#who, country code, country, and date are categorical</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li>How many missing values are there? Show the missing values by columns. What variable has the most number of missing values?</li>
 </ol>
 <pre class="r"><code>colSums(is.na(df))</code></pre>
 <pre><code>##  ï..Date_reported      Country_code           Country        WHO_region 
-##                 0               178                 0                 0 
+##                 0               179                 0                 0 
 ##         New_cases  Cumulative_cases        New_deaths Cumulative_deaths 
 ##                 0                 0                 0                 0</code></pre>
 <pre class="r"><code>library(lubridate)</code></pre>
@@ -420,7 +421,7 @@ str(df)</code></pre>
 <li>Correct the types of the variables that are mismatched type.</li>
 </ol>
 <pre class="r"><code>str(df)</code></pre>
-<pre><code>## &#39;data.frame&#39;:    40081 obs. of  8 variables:
+<pre><code>## &#39;data.frame&#39;:    40297 obs. of  8 variables:
 ##  $ ï..Date_reported : chr  &quot;2020-02-24&quot; &quot;2020-02-25&quot; &quot;2020-02-26&quot; &quot;2020-02-27&quot; ...
 ##  $ Country_code     : chr  &quot;AF&quot; &quot;AF&quot; &quot;AF&quot; &quot;AF&quot; ...
 ##  $ Country          : chr  &quot;Afghanistan&quot; &quot;Afghanistan&quot; &quot;Afghanistan&quot; &quot;Afghanistan&quot; ...
@@ -429,11 +430,16 @@ str(df)</code></pre>
 ##  $ Cumulative_cases : int  5 5 5 5 5 5 5 5 5 5 ...
 ##  $ New_deaths       : int  0 0 0 0 0 0 0 0 0 0 ...
 ##  $ Cumulative_deaths: int  0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+<pre class="r"><code>df$ï..Date_reported &lt;- ymd(df$ï..Date_reported)
+
+class(df$ï..Date_reported)</code></pre>
+<pre><code>## [1] &quot;Date&quot;</code></pre>
+<pre class="r"><code>df$day &lt;- wday(df$ï..Date_reported)</code></pre>
 <ol start="5" style="list-style-type: decimal">
 <li>Find the daily average number of cases globally.</li>
 </ol>
 <pre class="r"><code>mean(df$New_cases)</code></pre>
-<pre><code>## [1] 674.4497</code></pre>
+<pre><code>## [1] 675.9043</code></pre>
 <ol start="6" style="list-style-type: decimal">
 <li>Find the maximum cases a day.</li>
 </ol>
@@ -443,43 +449,78 @@ str(df)</code></pre>
 <li>Which country at which date has the maximum number of cases a day? <em>Hint: use the <code>which.max</code> function to find the index of the row that contains the maximum number of cases. Then from the row index, find that country and the date. </em></li>
 </ol>
 <pre class="r"><code>which.max(df$New_cases)</code></pre>
-<pre><code>## [1] 17361</code></pre>
+<pre><code>## [1] 17454</code></pre>
 <pre class="r"><code>df[16888,]</code></pre>
 <pre><code>##       ï..Date_reported Country_code Country WHO_region New_cases
-## 16888       2020-07-09           HU Hungary       EURO         5
-##       Cumulative_cases New_deaths Cumulative_deaths
-## 16888             4210          0               589</code></pre>
+## 16888       2020-04-09           HU Hungary       EURO        85
+##       Cumulative_cases New_deaths Cumulative_deaths day
+## 16888              980          8                66   5</code></pre>
 <ol start="8" style="list-style-type: decimal">
 <li>How many WHO’s region there are in the data?</li>
 </ol>
 <pre class="r"><code>table(df$WHO_region)</code></pre>
 <pre><code>## 
 ##  AFRO  AMRO  EMRO  EURO Other SEARO  WPRO 
-##  8464  9695  4166 11702   216  2000  3838</code></pre>
+##  8513  9749  4188 11763   217  2010  3857</code></pre>
 <ol start="9" style="list-style-type: decimal">
 <li>Find the daily average cases in EUROPE. Find the daily average cases by regions.</li>
 </ol>
 <pre class="r"><code>d1=df[(df$WHO_region==&quot;EURO&quot;),]
 mean(d1$New_cases)</code></pre>
-<pre><code>## [1] 385.2666</code></pre>
+<pre><code>## [1] 385.6232</code></pre>
+<pre class="r"><code>by(df$New_cases, df$WHO_region, mean)</code></pre>
+<pre><code>## df$WHO_region: AFRO
+## [1] 128.2919
+## ------------------------------------------------------------ 
+## df$WHO_region: AMRO
+## [1] 1455.878
+## ------------------------------------------------------------ 
+## df$WHO_region: EMRO
+## [1] 483.1404
+## ------------------------------------------------------------ 
+## df$WHO_region: EURO
+## [1] 385.6232
+## ------------------------------------------------------------ 
+## df$WHO_region: Other
+## [1] 3.414747
+## ------------------------------------------------------------ 
+## df$WHO_region: SEARO
+## [1] 2422.444
+## ------------------------------------------------------------ 
+## df$WHO_region: WPRO
+## [1] 135.3591</code></pre>
 <ol start="10" style="list-style-type: decimal">
 <li>Find the daily average number of cases in the US in the last 5 days.</li>
 </ol>
-<pre class="r"><code>d1 = df[(Sys.Date()- df$date_reported&lt;7),]
-mean(d1)</code></pre>
-<pre><code>## Warning in mean.default(d1): argument is not numeric or logical: returning NA</code></pre>
-<pre><code>## [1] NA</code></pre>
+<pre class="r"><code>d1 = df[(df$Country==&#39;United States of America&#39;) &amp; (Sys.Date()- df$date&lt;6),]
+mean(d1$New_cases)</code></pre>
+<pre><code>## [1] NaN</code></pre>
 <ol start="11" style="list-style-type: decimal">
 <li>Which day of the week has the most number of cases in South East Asia (SEARO region)?</li>
 </ol>
-<pre class="r"><code>d1=df[(df$WHO_region==&quot;SEARO&quot;),]
-max(d1$New_cases)</code></pre>
-<pre><code>## [1] 90802</code></pre>
-<pre class="r"><code>df[78761,]</code></pre>
-<pre><code>##    ï..Date_reported Country_code Country WHO_region New_cases Cumulative_cases
-## NA             &lt;NA&gt;         &lt;NA&gt;    &lt;NA&gt;       &lt;NA&gt;        NA               NA
-##    New_deaths Cumulative_deaths
-## NA         NA                NA</code></pre>
+<pre class="r"><code>df2=df[(df$WHO_region==&quot;SEARO&quot;),]
+by(df2$New_cases, df2$day, mean)</code></pre>
+<pre><code>## df2$day: 1
+## [1] 2544.885
+## ------------------------------------------------------------ 
+## df2$day: 2
+## [1] 2455.392
+## ------------------------------------------------------------ 
+## df2$day: 3
+## [1] 2292.568
+## ------------------------------------------------------------ 
+## df2$day: 4
+## [1] 2247.319
+## ------------------------------------------------------------ 
+## df2$day: 5
+## [1] 2425.074
+## ------------------------------------------------------------ 
+## df2$day: 6
+## [1] 2486.357
+## ------------------------------------------------------------ 
+## df2$day: 7
+## [1] 2504.087</code></pre>
+<pre class="r"><code>#monday does (~2545 every monday)</code></pre>
 </div>
 
 
