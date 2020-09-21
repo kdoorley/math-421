@@ -1,0 +1,122 @@
+***How to do it?***: 
+
+- Open the Rmarkdown file of this assignment ([link](fa2020_assignment5.Rmd)) in Rstudio. 
+
+- Right under each **question**, insert  a code chunk (you can use the hotkey `Ctrl + Alt + I` to add a code chunk) and code the solution for the question. 
+
+- `Knit` the rmarkdown file (hotkey: `Ctrl + Alt + K`) to export an html.  
+
+-  Publish the html file to your Githiub Page. 
+
+***Submission***: Submit the link on Github of the assignment to Blackboard under Assignment 4. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+```
+
+-------
+
+**The data:** 
+
+*The sinking of the Titanic is one of the most infamous shipwrecks in history.  On April 15, 1912, during her maiden voyage, the widely considered “unsinkable” RMS Titanic sank after colliding with an iceberg. Unfortunately, there weren’t enough lifeboats for everyone onboard, resulting in the death of 1502 out of 2224 passengers and crew.  While there was some element of luck involved in surviving, it seems some groups of people were more likely to survive than others.*
+
+-------
+
+**Questions**
+
+1. Use read_csv to import the titanic data. 
+
+```{r}
+library(tidyverse)
+titanic_df <- read_csv('train.csv')
+str(titanic_df)
+```
+
+
+-------
+
+2. How many missing values in total?  Which columns has the most number if missing values?
+
+```{r}
+sum(is.na(titanic_df))
+```
+
+-------
+
+3. Remove the column with the most number of missing value
+
+
+```{r}
+colSums(is.na(titanic_df))
+```
+```{r}
+titanic_df$Cabin <- NULL
+```
+
+-------
+
+4.  Remove rows containing missing values and save it as a new dataset. The original dataset remains unchanged by this action.
+
+```{r}
+t_df1 <- drop_na(titanic_df)
+```
+
+-------
+
+5.  Replace the missing values of numeric variables with the corresponding average of the columns.
+
+```{r}
+library(tidyverse)
+titanic_df$Fare <- replace_na(titanic_df$Fare, mean(titanic_df$Fare, na.rm = TRUE))
+
+titanic_df$Age <- replace_na(titanic_df$Age, mean(titanic_df$Age, na.rm = TRUE))
+```
+
+
+-------
+
+6.  Replace the missing values of catagorical variables with the corresponding mode (most frequent value) of the columns.
+
+```{r}
+titanic_df$Embarked <- replace_na(titanic_df$Embarked, mode(titanic_df$Embarked))
+```
+
+
+-------
+
+7.  The `Survived` column records whether a passenger is survived or not. `Survived = 1` means the passenger survived. Thus, the chance of survived for a random passenger can be estimated by
+
+```{r, eval=FALSE}
+mean(titanic_df$Survived)
+```
+
+Compare the chance of survived between male and female.  *Hint (Use group_by + summarise combo)*
+
+```{r}
+titanic_df %>% 
+  group_by(Sex) %>% 
+  summarise(mean(Survived))
+
+```
+
+
+-------
+
+8.  Use the `summary` function to find the first quartile (Q1) and the thrid quartile(Q3) of variable `Age`. Create a new variable taking values of `young` (Age < Q1), `middle` (Age from Q1 to Q3), and `old`(Age > Q3). Compare the chance of survived between these three groups of age. 
+
+```{r}
+library(tidyverse)
+summary(titanic_df$Age)
+titanic_df$Age <- case_when(
+  titanic_df$Age <=22 ~ 'young',
+  titanic_df$Age <=30 ~ 'middle',
+  TRUE ~ 'old')
+```
+
+```{r}
+titanic_df %>% 
+  group_by(Age) %>% 
+  summarise(mean(Survived))
+```
+
+
