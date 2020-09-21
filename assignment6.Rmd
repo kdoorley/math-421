@@ -33,6 +33,11 @@ Use the data of your own.  Produce the following types of plots and comment on e
 library(tidyverse)
 spotify=read_csv('data.csv')
 ```
+```{r}
+library(lubridate)
+spotify$release_date <- ymd(spotify$release_date)
+class(spotify$release_date)
+```
 
 -------
 
@@ -44,33 +49,77 @@ spotify=read_csv('data.csv')
 
 - Boxplot
 
+```{r}
+library(ggplot2)
+
+ggplot(spotify, aes(x=duration_ms)) + geom_density()
+
+```
+```{r}
+library(ggplot2)
+
+ggplot(spotify, aes(x=duration_ms)) + geom_histogram()
+```
+```{r}
+spotify %>% filter(year>2019) %>% ggplot()+
+  geom_density(mapping = aes(x = duration_ms))
+```
+
 -------
 
 2. For one categorical variable
 
+
 - Barplot
+```{r}
+ggplot(spotify, aes(x=explicit)) + geom_bar()
+```
+
 
 -------
 
 3. For one two continuous variables
 
 - Scatter Plot
+```{r}
+ggplot(spotify, aes(x=loudness,y=danceability)) + geom_point()
+```
+
 
 - Line Plot
+```{r}
+spotify %>% filter(year>2019) %>% ggplot()+
+  geom_line(mapping = aes(x=danceability,y=popularity))
+
+```
+
 
 - Smooth Plot
+```{r}
+spotify %>% filter(year>2019) %>% ggplot()+
+  geom_smooth(mapping = aes(x=danceability,y=popularity))
+```
 
 -------
 
 4. For one continuous + one categorical variables
 
 - Density
+```{r}
+spotify %>% filter(year>2019) %>% ggplot()+
+  geom_density(mapping = aes(x=explicit,y=duration_ms))
+```
+
 
 - BoxPlot
 
 -------
 
 5. For two categorical variables: barplot
+```{r}
+spotify %>% ggplot()+
+  geom_bar(mapping=aes(x=year, fill=popularity), position='dodge')
+```
 
 
 
