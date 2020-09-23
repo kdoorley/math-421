@@ -32,11 +32,16 @@ Use the data of your own.  Produce the following types of plots and comment on e
 ```{r}
 library(tidyverse)
 spotify=read_csv('data.csv')
+str(spotify)
 ```
 ```{r}
 library(lubridate)
 spotify$release_date <- ymd(spotify$release_date)
 class(spotify$release_date)
+```
+```{r}
+#make ms into s
+spotify %>% mutate(duration_s= duration_ms/1000)
 ```
 
 -------
@@ -51,18 +56,24 @@ class(spotify$release_date)
 
 ```{r}
 library(ggplot2)
+spotify %>% mutate(duration_s= duration_ms/1000) %>% 
+ggplot()+ aes(x=duration_s) + geom_density()
 
-ggplot(spotify, aes(x=duration_ms)) + geom_density()
-
+#seeing where the density is the highest, most of the songs are in the same duration
 ```
+ 
+
 ```{r}
 library(ggplot2)
+spotify %>% mutate(duration_s= duration_ms/1000) %>% 
+ggplot()+ aes(x=duration_s) + geom_histogram()
 
-ggplot(spotify, aes(x=duration_ms)) + geom_histogram()
+#very similar to density plot
 ```
 ```{r}
-spotify %>% filter(year>2019) %>% ggplot()+
-  geom_density(mapping = aes(x = duration_ms))
+spotify %>% mutate(duration_s= duration_ms/1000) %>% filter(year>2019) %>% ggplot()+
+  geom_boxplot(mapping = aes(x = duration_s))
+#this is clear that many of the songs are in the 180-250s range for length with several outliars. 
 ```
 
 -------
@@ -73,6 +84,7 @@ spotify %>% filter(year>2019) %>% ggplot()+
 - Barplot
 ```{r}
 ggplot(spotify, aes(x=explicit)) + geom_bar()
+#majority of the songs are not explicit
 ```
 
 
@@ -82,14 +94,17 @@ ggplot(spotify, aes(x=explicit)) + geom_bar()
 
 - Scatter Plot
 ```{r}
-ggplot(spotify, aes(x=loudness,y=danceability)) + geom_point()
+spotify %>% filter(year==(2019)) %>% ggplot()+ aes(x=loudness,y=danceability) + geom_point()
+#the cluster of loud music also ranks high in dancablity
 ```
 
 
 - Line Plot
 ```{r}
 spotify %>% filter(year>2019) %>% ggplot()+
-  geom_line(mapping = aes(x=danceability,y=popularity))
+  geom_line(mapping = aes(x=tempo,y=danceability))
+
+#although scattered, the general trend is higher the tempo, higher the danceability
 
 ```
 
@@ -97,7 +112,8 @@ spotify %>% filter(year>2019) %>% ggplot()+
 - Smooth Plot
 ```{r}
 spotify %>% filter(year>2019) %>% ggplot()+
-  geom_smooth(mapping = aes(x=danceability,y=popularity))
+  geom_smooth(mapping = aes(x=danceability,y=tempo))
+#same conclusion as above, just easier to determine
 ```
 
 -------
@@ -106,8 +122,13 @@ spotify %>% filter(year>2019) %>% ggplot()+
 
 - Density
 ```{r}
-spotify %>% filter(year>2019) %>% ggplot()+
-  geom_density(mapping = aes(x=explicit,y=duration_ms))
+spotify %>% filter(year>2015) %>% ggplot()+
+  geom_density(mapping = aes(color=factor(year),x=duration_ms))
+
+#as the years have gone on seems that the songs are getting longer
+```
+```{r}
+spotify %>% filter(year>2000)
 ```
 
 
@@ -117,8 +138,10 @@ spotify %>% filter(year>2019) %>% ggplot()+
 
 5. For two categorical variables: barplot
 ```{r}
-spotify %>% ggplot()+
-  geom_bar(mapping=aes(x=year, fill=popularity), position='dodge')
+spotify %>% filter(year>2015) %>% ggplot()+
+  geom_bar(mapping = aes(color=factor(explicit),x=danceability))
+
+#the explicit songs are skewed towards higher danceability
 ```
 
 
