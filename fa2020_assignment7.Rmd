@@ -30,20 +30,56 @@ knitr::opts_chunk$set(message = FALSE)
 Use the data of your own.  Produce the following types of plots and comment on each plot. Plots should be meaningful. If you use the data we used in class, make sure the plots are not the same as the ones in the slides. All plots should have title, caption, appropriate labels on x and y-axis. 
 
 -------
+```{r}
+library(tidyverse)
+titanic_df=read_csv('train.csv')
+```
+
 
 1. Make a plot use `face_wrap` by one categorical variable (`face_wrap(~variable1)`)
+```{r}
+library(ggplot2)
+
+ggplot(titanic_df,aes(x=Survived,y=Age))+geom_col()+facet_wrap(~Sex)
+```
 
 2. Make a plot use `face_wrap` by two categorical variables (`face_wrap(variable1~variable2)`)
+```{r}
+ggplot(titanic_df,aes(x=Survived,y=Age))+geom_col()+facet_wrap(Sex~Pclass)
+```
 
-3. Make a plot use `position ='jitter'`. 
+
+3. Make a plot use `position ='jitter'`.
+```{r}
+ggplot(titanic_df, aes(x=Fare,y=Sex))+geom_point()
+position='jitter'
+```
+
 
 4. Make a plot use `position ='dodge'`.
+```{r}
+ggplot(titanic_df,aes(x=Survived,fill=Age))+geom_bar()
+position='dodge'
+```
+
 
 5. Make a plot use `position ='fill'`. 
+```{r}
+ggplot(titanic_df,aes(x=Survived,fill=Age))+geom_bar()
+position='fill'
+```
 
 6. Make a plot use `geom_col`.
+```{r}
+ggplot(titanic_df,aes(x=Survived,y=Pclass))+geom_col()
+```
+
 
 7. Change the theme of one of your plots. 
+```{r}
+ggplot(titanic_df,aes(x=Survived,y=Pclass))+geom_col()
+theme_dark()
+```
 
 8. Save a plot and put a link of the plot to your Github Webpage.  To link a plot `abc.png` you just need to insert the following on the README.md
 
