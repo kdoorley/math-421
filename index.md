@@ -10,3 +10,7 @@
 
 [Assignment 5](assignment5.html)
 
+[Assignment 6](assignment6.html)
+
+[Assingment 7](fa2020_assignment7.html)
+
