@@ -63,5 +63,23 @@ animate(a1,nframes = 150)
 
 3. Create the new variable (column) `death_per_cases` recording the number of deaths per cases (Hint: divide cumulative deaths by cumulative cases).  What are the three countries with the highest deaths per cases? 
 
+```{r}
+df$death_per_cases <- df$Cumulative_deaths / df$Cumulative_cases
+```
+
+
 4. Make a plot revealing the number of deaths per cases of the US, Italy and Mexico. 
+
+```{r}
+d1 <- df %>% filter(Country %in% c('United States of America','Mexico','Italy'))
+a1 <- d1 %>% ggplot(aes(y=death_per_cases,
+            x=Date_reported,
+            color=Country))+ 
+  geom_line()+
+  geom_point(size=3)+
+  geom_text(aes(label = death_per_cases), 
+            hjust = -.1, size=5) +
+  transition_reveal(Date_reported)
+animate(a1,nframes = 150)
+```
 
