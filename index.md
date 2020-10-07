@@ -14,3 +14,4 @@
 
 [Assingment 7](fa2020_assignment7.html)
 
+[Assignment 8](assignment8.html)
