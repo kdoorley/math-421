@@ -1,0 +1,101 @@
+
+---
+output: 
+  html_document:
+  pdf_document: default
+  word_document: default
+title: "Assignment 8: Visualization - Making a bar race"
+---
+
+***How to do it?***: 
+
+- Open the Rmarkdown file of this assignment ([link](fa2020_assignment8.Rmd)) in Rstudio. 
+
+- Right under each **question**, insert  a code chunk (you can use the hotkey `Ctrl + Alt + I` to add a code chunk) and code the solution for the question. 
+
+- `Knit` the rmarkdown file (hotkey: `Ctrl + Alt + K`) to export an html.  
+
+-  Publish the html file to your Githiub Page. 
+
+***Submission***: Submit the link on Github of the assignment to Blackboard.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+```
+
+
+
+-------
+
+**Questions**
+
+Use the data of your own.  Produce the following types of plots and comment on each plot. Plots should be meaningful. If you use the data we used in class, make sure the plots are not the same as the ones in the slides. All plots should have title, caption, appropriate labels on x and y-axis. 
+
+-------
+
+1. Use the WHO's dataset at [this link](https://covid19.who.int/WHO-COVID-19-global-data.csv). Make a top-10 bar race by months between countries on the number of deaths by Covid 19.  
+```{r}
+library(tidyverse)
+library(lubridate)
+
+df <- read_csv("https://covid19.who.int/WHO-COVID-19-global-data.csv")
+str(df)
+```
+
+```{r}
+library(gganimate)
+library(ggplot2)
+library(knitr)
+library(gifski)
+
+df$month <- month(df$Date_reported)
+d1 <- df %>% group_by(month, Country) %>% summarise(mean=mean(Cumulative_deaths))
+d2 <- d1 %>% mutate(rank=rank(-mean)) %>% ungroup()
+d3 <- d2 %>% filter(rank <= 10)
+a1 <- d3 %>% ggplot(aes(x=rank, y=mean, group=Country, fill=Country, label=Country)) + geom_col()+
+    geom_text(aes(y = mean, label = Country), hjust = 1.4)+ 
+    coord_flip(clip = "off", expand = FALSE) +scale_x_reverse()+
+    labs(title = 'Month {closest_state}', x='', y='Total Deaths', fill='Country')+
+    theme(plot.title = element_text(hjust = 1, size = 22),
+          axis.ticks.y = element_blank(),
+          axis.text.y  = element_blank()) + 
+    transition_states(month)+
+    ease_aes("cubic-in-out")
+animate(a1, nframes = 200, fps = 10)
+```
+
+
+2. Make another bar race using that dataset.  
+```{r}
+
+d1 <- df %>% group_by(month, WHO_region) %>% summarise(mean=mean(Cumulative_cases))
+d2 <- d1 %>% mutate(rank=rank(-mean)) %>% ungroup()
+d3 <- d2 %>% filter(rank <= 10)
+a1 <- d3 %>% ggplot(aes(x=rank, y=mean, group=WHO_region, fill=WHO_region, label=WHO_region)) + geom_col()+
+    geom_text(aes(y = mean, label = WHO_region), hjust = 1.4)+ 
+    coord_flip(clip = "off", expand = FALSE) +scale_x_reverse()+
+    labs(title = 'Month {closest_state}', x='', y='Total Deaths', fill='WHO_region')+
+    theme(plot.title = element_text(hjust = 1, size = 22),
+          axis.ticks.y = element_blank(),
+          axis.text.y  = element_blank()) + 
+    transition_states(month)+
+    ease_aes("cubic-in-out")
+animate(a1, nframes = 200, fps = 10)
+```
+
+
+3. Make a bar race using a dataset of your own interest. 
+```{r}
+spotify <- read_csv('data.csv')
+spot_a1 <- spotify %>% ggplot(aes(x=explicit)) + geom_bar()+
+    geom_text(aes(y = count, label = explicit, hjust = 1.4)+ 
+    coord_flip(clip = "off", expand = FALSE) +scale_x_reverse()+
+    labs(title = 'Year: {closest_state}', x='explicit', y='count')+
+    theme(plot.title = element_text(hjust = 1, size = 22),
+          axis.ticks.y = element_blank(),
+          axis.text.y  = element_blank()) + 
+    transition_states(year)
+animate(spot_a1, nframes = 200, fps = 10)
+```
+
+

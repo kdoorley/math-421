@@ -1,0 +1,67 @@
+
+---
+output: 
+  html_document:
+  pdf_document: default
+  word_document: default
+title: "Assignment 9: Visualization - Revealing a graph"
+---
+
+***How to do it?***: 
+
+- Open the Rmarkdown file of this assignment ([link](fa2020_assignment9.Rmd)) in Rstudio. 
+
+- Right under each **question**, insert  a code chunk (you can use the hotkey `Ctrl + Alt + I` to add a code chunk) and code the solution for the question. 
+
+- `Knit` the rmarkdown file (hotkey: `Ctrl + Alt + K`) to export an html.  
+
+-  Publish the html file to your Githiub Page. 
+
+***Submission***: Submit the link on Github of the assignment to Blackboard.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+```
+
+
+-------
+
+1. Use the dataset by of covid 19 by WHO at https://covid19.who.int/WHO-COVID-19-global-data.csv. Find the three countries with the most numbers of deaths by Covid-19. 
+
+Hint: 
+
+-  Use `filter` to select the most current date 
+
+-  Pipe with `arrange(-Cumulative_deaths)` to rank the data by the number of cumulative deaths
+
+```{r}
+library(tidyverse)
+df <- read_csv('https://covid19.who.int/WHO-COVID-19-global-data.csv')
+df2 <- df %>% filter(Date_reported==Sys.Date()) %>% arrange(-Cumulative_deaths)
+```
+
+
+
+2. Make a plot revealing the number of deaths in the three countries with the most numbers of deaths
+
+```{r}
+library(gganimate)
+d1 <- df %>% group_by(Date_reported, Country) %>% summarise(Cumulative_deaths)
+d2 <- d1 %>% mutate(rank=rank(-Cumulative_deaths)) %>% ungroup()
+a1 <- d2 %>% filter(rank <= 3) %>% 
+  ggplot(aes(y=Cumulative_deaths,
+            x=Date_reported,
+            color=Country))+ 
+  geom_line()+
+  geom_point(size=3)+
+  geom_text(aes(label = Cumulative_deaths), 
+            hjust = -.1, size=5) +
+  transition_reveal(Date_reported)
+animate(a1,nframes = 150)
+```
+
+
+3. Create the new variable (column) `death_per_cases` recording the number of deaths per cases (Hint: divide cumulative deaths by cumulative cases).  What are the three countries with the highest deaths per cases? 
+
+4. Make a plot revealing the number of deaths per cases of the US, Italy and Mexico. 
+
