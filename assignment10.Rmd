@@ -24,12 +24,6 @@ knitr::opts_chunk$set(message = FALSE)
 ```
 
 
-
-
-
-
-
-
 -------
 
 1. Install the package `mlbench` and use the follows to import the data
