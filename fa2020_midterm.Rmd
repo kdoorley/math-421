@@ -39,11 +39,16 @@ Link: https://drive.google.com/open?id=15QNBf6YYKocK2nNIfpKDer58kQnCPNZJ
 
 ```{r}
 library(haven)
-mid_df <- 
+mid_df <- read_sas('hdd0318cy.sas7bdat')
 ```
 
     
 3. Filter the data to have only patients of the year 2018 (`yod==2018`)
+
+```{r}
+midterm_2018 <- mid_df %>% filter(yod==2018)
+```
+
     
 4. Select to work with only following variables: 
 

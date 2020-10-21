@@ -40,7 +40,7 @@ titanic_df=read_csv('train.csv')
 ```{r}
 library(ggplot2)
 
-ggplot(titanic_df,aes(x=Survived,y=Age))+geom_col()+facet_wrap(~Sex)
+ggplot(titanic_df,aes(x=Survived,y=Age))+geom_col()+facet_wrap(~Sex)+ggtitle
 ```
 
 2. Make a plot use `face_wrap` by two categorical variables (`face_wrap(variable1~variable2)`)
