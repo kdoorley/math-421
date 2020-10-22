@@ -75,11 +75,29 @@ plot(forest_cv)
  
 -------
 
-```{r}
-install.packages("ranger")
-```
 
 3. Use cross-validation with of 30 folds to tune random forest (method='ranger').  What are the parameters that produce the greatest accuracy?
+
+```{r}
+trControl = trainControl(method = "cv",
+                         number = 30)
+tuneGrid = expand.grid(mtry = 2:4,
+                       splitrule = c('gini', 'extratrees'),
+                       min.node.size = c(1:10))
+ranger_cv <- train(target~., data=df_train, 
+                    method = "ranger", 
+                    trControl = trControl,
+                    tuneGrid = tuneGrid)
+```
+
+-------
+
+4. Go to https://topepo.github.io/caret/available-models.html and pick a classification model.  Tune the classification model using cross-validation of 30 folds. 
+
+```{r}
+getModelInfo('cforest')$cforest$parameters
+```
+
 
 ```{r}
 tuneGrid = expand.grid(mtry = 2:4)
@@ -88,14 +106,20 @@ tuneGrid = expand.grid(mtry = 2:4)
 trControl = trainControl(method = "cv",
                          number = 30)
 
-forest_cv <- train(target~., data=df_train, 
-                                method = "ranger", 
+cforest_cv <- train(target~., data=df_train, 
+                                method = "cforest", 
                                 trControl = trControl,
                                 tuneGrid = tuneGrid)
 ```
 
--------
+5. Compare the three models in question 2, 3, and 4 to select the final model.  Evaluate the accuracy of the final model on the test data.
+```{r}
+# Compare models
+results <- resamples(list(forest = forest_cv,
+                          ranger = ranger_cv,
+                          cforest= cforest_cv))
+bwplot(results)
+```
 
-4. Go to https://topepo.github.io/caret/available-models.html and pick a classification model.  Tune the classification model using cross-validation of 30 folds. 
 
-5. Compare the three models in question 2, 3, and 4 to select the final model.  Evaluate the accuracy of the final model on the test data. 
+
