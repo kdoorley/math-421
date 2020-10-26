@@ -26,4 +26,4 @@
 
 [Midterm](midterm.html)
 
-[Midterm Presentation](midterm_presentation.pdf)
+[Midterm Presentation](Midterm_Presentation.pdf)
