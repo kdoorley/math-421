@@ -1,0 +1,36 @@
+Midterm Presentation
+========================================================
+author: Kathryn Doorley
+date: 10/26/2020
+autosize: true
+
+Pre-Processing the Data
+========================================================
+
+- Filtered for patients dicharged in 2018
+
+- Dropped null columns
+
+- Basic data queries
+
+```{r}
+library(tidyverse)
+midterm_df_final %>%
+  group_by(moa) %>% 
+  count()
+```
+
+
+Slide With Code
+========================================================
+
+```{r}
+summary(cars)
+```
+
+Slide With Plot
+========================================================
+
+```{r, echo=FALSE}
+plot(cars)
+```
