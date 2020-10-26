@@ -1,0 +1,80 @@
+---
+title: "Midterm Presentation"
+author: "Kathryn Doorley"
+date: "10/26/2020"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+```{r setup, include = FALSE}
+
+# R markdown options
+knitr::opts_chunk$set(echo = TRUE, 
+                      
+                      fig.width = 10,
+                      fig.height = 5,
+                      fig.align = "center", 
+                      message = FALSE,
+                      warning = FALSE)
+
+# Load packages
+library(gganimate)
+library(ggplot2)
+library(tidyverse)
+library(lubridate)
+library(knitr)
+library(dbplyr)
+
+```
+
+## Loading and Cleaning Data
+
+```{r}
+library(tidyverse)
+
+midterm_df <- read.csv('midterm.csv')
+midterm_2018 <- filter(midterm_df,yod==18)
+midterm_df_final <- midterm_2018 %>% select(
+                      "yod", "payfix","pay_ub92","age",  
+                      "sex","raceethn","provider","moa", 
+                      "yoa","mod","admtype", "asource" , 
+                      "preopday" ,"los", "service" , "icu","ccu",    
+                      "dispub92", "payer"  ,"drg","trandb", 
+                      "randbg","randbs","orr", "anes","seq",   
+                      "lab","dtest", "ther","blood","phar", 
+                      "other","patcon","bwght","total","tot" ,  
+                      "ecodub92","b_wt","pt_state","diag_adm","ancilar" ,
+                      "campus","er_fee","er_chrg","er_mode","obs_chrg",
+                      "obs_hour","psycchrg","nicu_day" )
+head(midterm_df_final)
+
+```
+
+
+```{r}
+midterm_df_final$payfix <- NULL
+midterm_df_final$preopday <- NULL
+midterm_df_final$obs_hour <- NULL
+midterm_df_final$nicu_day <- NULL
+```
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
