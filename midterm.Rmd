@@ -44,13 +44,17 @@ midterm_df <- read_sas('hdd0318cy.sas7bdat')
 
 ```
 
+```{r}
+head(midterm_df)
+```
+
     
 3. Filter the data to have only patients of the year 2018 (`yod==2018`)
 
 ```{r}
-library(tidyverse)
+library(dplyr)
 
-midterm_2018 <- midterm_df %>% filter(yod=='2018')
+midterm_2018 <- filter(midterm_df,yod==18)
 ```
 
     
@@ -83,13 +87,21 @@ write_csv(midterm_df_final,'midterm.csv')
 5. What are variables that have missing values?
 
 ```{r}
-colsums(midterm_df_final)
+library(tidyverse)
+
+colSums(is.na(midterm_df_final))
 ```
 
  
 6. Remove all variables with missing values
 
-None of them have missing variables so I won't do this.
+```{r}
+midterm_df_final$payfix <- NULL
+midterm_df_final$preopday <- NULL
+midterm_df_final$obs_hour <- NULL
+midterm_df_final$nicu_day <- NULL
+```
+
 
  
 7. Refer to the data description in the file `HDD2015-18cy6-20-19.docx`, which variable recording the month of admission?, which variable recording the month of discharge?
@@ -101,25 +113,92 @@ mod= month of discharge
 8. Which month admitted the most number of patients? Which month admitted the most number of male patients?
 
 ```{r}
-table(midterm_df_final)
+midterm_df_final %>%
+
+  group_by(moa) %>% 
+  count()
+```
+```{r}
+midterm_df_final %>%
+  filter(sex==1) %>% 
+  group_by(moa) %>% 
+  count()
 ```
 
 
 9. Which month has the most number of teenage female patients?
+```{r}
+midterm_df_final %>%
+  filter(sex==2,age>=13,age<20) %>%
+  group_by(moa) %>% 
+  count()
+```
 
-10. Which provider has the most number of female patients in October? 
+
+10. Which provider has the most number of female patients in October?
+
+```{r}
+midterm_df_final %>%
+  filter(sex==2,age>=13,age<20) %>%
+  group_by(provider) %>% 
+  count()
+```
+
 
 11. Is female patients older than male patients, on average? 
 
+```{r}
+midterm_df_final %>%
+  filter(sex==1) %>%
+  summarise(mean(age))
+```
+```{r}
+midterm_df_final %>%
+  filter(sex==2) %>%
+  summarise(mean(age))
+```
+
+
 12. Calculate the average age of patients by months. Which month has the oldest patients on average age?
+```{r}
+midterm_df_final %>%
+  filter(sex==1) %>%
+  group_by(moa) %>% 
+  summarise(mean(age))
+```
+
 
 13. What is the name of the provider that has the highest total charge?
+```{r}
+midterm_df_final %>%
+  group_by(provider) %>% 
+  summarise(max(total))
+```
 
 14. What is the name of the provider that has the least total charge for teenage male?
+```{r}
+midterm_df_final %>%
+  filter(sex==1,age>=13,age<20) %>%
+  group_by(provider) %>% 
+  summarise(min(total))
+```
+
 
 15. Calculate the length of stays by races.  Which race has the longest length of stays on average?
+```{r}
+midterm_df_final %>%
+  group_by(raceethn) %>% 
+  summarise(mean(los))
+```
 
 16. On average, how much a 20 year-old male white get charged for staying 1 day?
+
+```{r}
+midterm_df_final %>%
+  filter(sex==1,age==20,los==1,raceethn==1) %>%
+  summarise(mean(total))
+```
+
 
 -------
 
@@ -128,6 +207,78 @@ table(midterm_df_final)
 Continue with the data from part I. 
 
 1. Provides at least 10 meaningful plots. Comments on the plots. All plots should have title, caption, appropriate labels on x and y-axis
+```{r}
+#plot 1
+los_plot <- midterm_df_final %>%
+  group_by(raceethn) %>% 
+  summarise(meanlos=mean(los))
+ggplot(los_plot, aes(x=raceethn, y=meanlos)) + geom_col() + ggtitle("Length of Stay by Race") + labs(y="Mean Length of Stay", x = "Race", caption = "A plot of average length of stay by race.From the plot you can see Unknown race (9) has the highest average length of stay.") + theme_minimal()
+```
+
+
+```{r}
+#plot 2
+age_plot <- midterm_df_final %>%
+  group_by(sex) %>% 
+  summarise(meanage=mean(age))
+ggplot(age_plot, aes(x=sex, y=meanage)) + geom_col() + ggtitle("Mean Age by Sex") + labs(y="Mean Age", x = "Sex", caption = "A plot of average age by sex, the female admitted patients have a lower age than the male patients") 
+```
+
+```{r}
+#plot 3
+ggplot(midterm_df_final, aes(x=age, y=los,color=raceethn)) + geom_jitter() + ggtitle("Age vs Length of Stay by Race") + labs(y="Length of Stay", x = "Age", caption = "Age and length of stay colored by race/ethnicity. Seems that babies (age 0) have a high concentration of longer stays") 
+```
+```{r}
+#plot 4
+
+ggplot(midterm_df_final, aes(x=moa)) + geom_bar() + ggtitle("Total Admissions by Month ") + labs(y="Total Admissions", x = "Month", caption = "A plot of total admissons by month, January has the highest total where the next month of Feburary has the lowest.") 
+```
+
+```{r}
+#plot 5
+midterm_df_final$total <- as.numeric(midterm_df_final$total)
+ggplot(midterm_df_final, aes(x=moa, y=total, color=sex)) + geom_col() + ggtitle("Total Charges by Month of Admission ") + labs(y="Total Charge", x = "Month", caption = "A plot of total charges by month and colored by sex")
+```
+```{r}
+#plot 6
+ggplot(midterm_df_final, aes(age)) + geom_density() + ggtitle("Density plot of age") + labs(y="Density", x = "Age", caption = "Density plot of the age variable. There are three distinct peaks, one for babies, 30-35 year olds, and elderly people")
+```
+```{r}
+#plot 7
+
+ggplot(midterm_df_final, aes(x=provider, y=total)) + geom_col() + ggtitle("Total Charges by Provider ") + labs(y="Total Charge", x = "Provider", caption = "The highest peak is Rhode Island Hospital, this makes sense because they are the largest hospital in Rhode Island and they do more complicated procedures")
+```
+```{r}
+midterm_df_final$b_wt <- as.numeric(midterm_df_final$b_wt)
+```
+
+
+
+```{r}
+#plot 8
+
+ggplot(midterm_df_final, aes(x=b_wt, y=total, color=sex)) + geom_jitter() + ggtitle("Total Charges by Baby's Birthweight") + labs(y="Total Charge", x = "bwght", caption = "The lower the baby's birthweight, the higher the charges")
+```
+```{r}
+midterm_df_final$age_bins <- case_when(
+  midterm_df_final$age <=13 ~ 'child',
+  midterm_df_final$age <20 ~ 'teen',
+  midterm_df_final$age <40 ~  'young adult',
+  midterm_df_final$age <=64 ~ 'middle',
+  TRUE ~ 'elderly')
+```
+
+```{r}
+#plot 9
+
+ggplot(midterm_df_final, aes(x=payer, y=total, color=age_bins)) + geom_col() + ggtitle("Total Charges by Payer") + labs(y="Total Charge", x = "Payer Code", caption = "Medicare is the highest payment, especially in the elderly age range.")
+```
+```{r}
+#plot 10
+`%notin%` <- Negate(`%in%`)
+er_mode <- midterm_df_final %>% filter(er_mode %notin% c(0,9))
+ggplot(er_mode, aes(x=er_mode,color=age_bins)) + geom_bar() + ggtitle("ER Mode of Arrival by Age") + labs(y="ER admits", x = "ER mode of arrival", caption = "Filtered out for NA and Unknown, the highest was through an ambulance or personal transportation") + theme_classic()
+```
 
 2. Make an animation
 
