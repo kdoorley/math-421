@@ -25,3 +25,5 @@
 [Assignment 12](assignment12.html)
 
 [Midterm](midterm.html)
+
+[Midterm Presentation](midterm_presentation.pdf)
