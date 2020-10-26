@@ -26,4 +26,4 @@
 
 [Midterm](midterm.Rmd)
 
-[Midterm Presentation](Midterm_Presentation.pdf)
+[Midterm Presentation](Midterm Presentation.pdf)
