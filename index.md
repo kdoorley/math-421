@@ -24,4 +24,6 @@
 
 [Assignment 12](assignment12.html)
 
-[Midterm](midterm.html)
+[Midterm](midterm.Rmd)
+
+[Midterm Presentation](Midterm_Presentation.pdf)
