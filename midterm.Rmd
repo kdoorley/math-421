@@ -551,8 +551,8 @@ bwplot(results)
 ```
 
 ```{r}
-pred <- predict(cforest_cv, df_test)
-cm <- confusionMatrix(data = pred, reference = df_test$target, positive = "old")
+pred <- predict(parRF_cv2, df_test2)
+cm <- confusionMatrix(data = pred, reference = df_test2$target, positive = "old")
 cm$overall[1]
 ```
 
