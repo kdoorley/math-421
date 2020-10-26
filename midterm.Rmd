@@ -354,6 +354,7 @@ midterm_df_model$mod <- factor(midterm_df_model$mod)
 midterm_df_model$admtype <- factor(midterm_df_model$admtype)
 midterm_df_model$campus <- factor(midterm_df_model$campus)
 midterm_df_model$er_mode <- factor(midterm_df_model$er_mode)
+midterm_df_model$target <- factor(midterm_df_model$target)
 ```
 
 ```{r}
@@ -449,7 +450,7 @@ bwplot(results)
 
 5. What is your final selection for the model? Test the accuracy of your final model on the test data. 
 ```{r}
-pred <- predict(cforest_cv, df_test)
+pred <- predict(forest_cv, df_test)
 cm <- confusionMatrix(data = pred, reference = df_test$target, positive = "high cost")
 cm$overall[1]
 ```
@@ -464,7 +465,23 @@ midterm_df_model2$target <- case_when(
   midterm_df_model2$age <65 ~ 'young',
   TRUE ~ 'old')
 midterm_df_model2$age <- NULL
+
 ```
+
+```{r}
+midterm_df_model2$sex <- factor(midterm_df_model2$sex)
+midterm_df_model2$raceethn <- factor(midterm_df_model2$raceethn)
+midterm_df_model2$provider <- factor(midterm_df_model2$provider)
+midterm_df_model2$admtype <- factor(midterm_df_model2$admtype)
+midterm_df_model2$campus <- factor(midterm_df_model2$campus)
+midterm_df_model2$er_mode <- factor(midterm_df_model2$er_mode)
+midterm_df_model2$target <- factor(midterm_df_model2$target)
+midterm_df_model2$los <- as.numeric(midterm_df_model2$los)
+midterm_df_model2$service <- factor(midterm_df_model2$service)
+midterm_df_model2$payer <- factor(midterm_df_model2$payer)
+midterm_df_model2$total <- as.numeric(midterm_df_model2$total)
+```
+
 
 ```{r}
 set.seed(2020)
