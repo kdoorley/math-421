@@ -26,4 +26,6 @@
 
 [Midterm](midterm.Rmd)
 
-[Midterm Presentation](Midterm_Presentation.pdf)
+[Midterm Presentation](Midterm Presentation.pdf)
+
+[Assingment 13](assingment13.html)
