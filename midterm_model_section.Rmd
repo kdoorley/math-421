@@ -1,0 +1,340 @@
+---
+title: "midterm_models"
+author: "Kathryn Doorley"
+date: "10/26/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+-------
+
+## Loading data again
+
+```{r}
+library(haven)
+
+midterm_df <- read_sas('hdd0318cy.sas7bdat')
+
+```
+
+```{r}
+head(midterm_df)
+```
+
+    
+3. Filter the data to have only patients of the year 2018 (`yod==2018`)
+
+```{r}
+library(dplyr)
+
+midterm_2018 <- filter(midterm_df,yod==18)
+```
+
+    
+4. Select to work with only following variables: 
+
+```{r}
+midterm_df_final <- midterm_2018 %>% select(
+                      "yod", "payfix","pay_ub92","age",  
+                      "sex","raceethn","provider","moa", 
+                      "yoa","mod","admtype", "asource" , 
+                      "preopday" ,"los", "service" , "icu","ccu",    
+                      "dispub92", "payer"  ,"drg","trandb", 
+                      "randbg","randbs","orr", "anes","seq",   
+                      "lab","dtest", "ther","blood","phar", 
+                      "other","patcon","bwght","total","tot" ,  
+                      "ecodub92","b_wt","pt_state","diag_adm","ancilar" ,
+                      "campus","er_fee","er_chrg","er_mode","obs_chrg",
+                      "obs_hour","psycchrg","nicu_day" )
+head(midterm_df_final)
+```
+ 
+
+*Notice*:  You may want to save the current data on your laptop if you want to read it again.  To save the data file use `write_csv(df, 'midterm.csv')`, for example.  
+
+```{r}
+#write_csv(midterm_df_final,'midterm.csv')
+```
+
+
+5. What are variables that have missing values?
+
+```{r}
+library(tidyverse)
+
+colSums(is.na(midterm_df_final))
+```
+
+ 
+6. Remove all variables with missing values
+
+```{r}
+midterm_df_final$payfix <- NULL
+midterm_df_final$preopday <- NULL
+midterm_df_final$obs_hour <- NULL
+midterm_df_final$nicu_day <- NULL
+```
+## III. Predictive Models
+
+Continue with the data from part I. Use the follows as the target and input variables: 
+
+*Target Variable*: Create the target variable taking value of 
+
+  - `low cost` if the total charge of a patient (`tot`) is smaller than the median of the total charge, and
+
+  - `high cost` otherwise. 
+
+*Input Variables*:
+
+  - "age","sex","raceethn","provider","moa","mod","admtype","campus", "er_mode", 'los'
+  
+-------
+```{r}
+midterm_df_model <- midterm_df_final %>% 
+  select("age","sex","raceethn","provider","moa","mod","admtype","campus", "er_mode", 'los','total')
+head(midterm_df_model)
+```
+
+```{r}
+midterm_df_model$total <- as.numeric(midterm_df_model$total)
+median(midterm_df_model$total)
+```
+
+
+```{r}
+midterm_df_model$target <- case_when(
+  midterm_df_model$total <=21854 ~ 'low cost',
+  TRUE ~ 'high cost')
+midterm_df_model$total <- NULL
+head(midterm_df_model)
+```
+
+
+1. Make sure all the categorical variables are factor, numeric variables are numeric. Set Training : Testing Split = 10 : 90 
+
+```{r}
+midterm_df_model$raceethn <- factor(midterm_df_model$raceethn)
+midterm_df_model$provider <- factor(midterm_df_model$provider)
+midterm_df_model$moa <- factor(midterm_df_model$moa)
+midterm_df_model$mod <- factor(midterm_df_model$mod)
+midterm_df_model$admtype <- factor(midterm_df_model$admtype)
+midterm_df_model$campus <- factor(midterm_df_model$campus)
+midterm_df_model$er_mode <- factor(midterm_df_model$er_mode)
+midterm_df_model$target <- factor(midterm_df_model$target)
+midterm_df_model$age <- as.numeric(midterm_df_model$age)
+```
+
+```{r}
+
+library(caret)
+
+set.seed(2020)
+
+splitIndex <- createDataPartition(midterm_df_model$target, p = .10, 
+                                  list = FALSE)
+df_train <- midterm_df_model[ splitIndex,]
+df_test <- midterm_df_model[-splitIndex,]
+
+```
+
+
+2. Train a decision tree using `rpart`.  Plot the decision tree. Plot the variable importance ranked by the tree. 
+```{r}
+library(rpart) 
+
+tree_model <- rpart(target ~ ., data = df_train,
+                 control = rpart.control(maxdepth = 3))
+
+```
+
+```{r}
+library(rattle)
+fancyRpartPlot(tree_model)
+```
+
+
+3. Using caret for this question. Set `Training Control` to be: Use Cross-Validation of 5 folds across all models.  Train & tune at least 3 different models (i.e. three different values for `method=` in the train function of caret).  Plot the hyper-parameter tuning plots for each model. 
+```{r}
+tuneGrid = expand.grid(mtry = 2:4)
+
+
+trControl = trainControl(method = "cv",
+                         number = 5)
+
+forest_cv <- train(target~., data=df_train, 
+                                method = "rf", 
+                                trControl = trControl,
+                                tuneGrid = tuneGrid)
+```
+
+```{r}
+plot(forest_cv)
+```
+
+```{r}
+trControl = trainControl(method = "cv",
+                         number = 5)
+tuneGrid = expand.grid(mtry=2:4)
+parRF_cv <- train(target~., data=df_train, 
+                    method = "parRF", 
+                    trControl = trControl,
+                    tuneGrid = tuneGrid)
+```
+
+```{r}
+plot(parRF_cv)
+```
+
+
+```{r}
+tuneGrid = expand.grid(mtry = 2:4)
+
+
+trControl = trainControl(method = "cv",
+                         number = 5)
+
+cforest_cv <- train(target~., data=df_train, 
+                                method = "cforest", 
+                                trControl = trControl,
+                                tuneGrid = tuneGrid)
+```
+
+```{r}
+plot(cforest_cv)
+```
+
+
+
+4. Plot the comparison of the models in 2. 
+
+```{r}
+results <- resamples(list(forest = forest_cv,
+                          parRF = parRF_cv,
+                          cforest = cforest_cv))
+bwplot(results)
+```
+
+
+5. What is your final selection for the model? Test the accuracy of your final model on the test data. 
+```{r}
+pred <- predict(forest_cv, df_test)
+cm <- confusionMatrix(data = pred, reference = df_test$target, positive = "high cost")
+cm$overall[1]
+```
+
+6. Create another `target` variable (binary), decide the input variables and redo 1 to 5. 
+
+```{r}
+midterm_df_model2 <- midterm_df_final %>% 
+  select("age", "sex","raceethn","provider", "admtype", 
+          "los", "service" , "payer","total","campus","er_mode")
+midterm_df_model2$target <- case_when(
+  midterm_df_model2$age <65 ~ 'young',
+  TRUE ~ 'old')
+midterm_df_model2$age <- NULL
+
+```
+
+```{r}
+midterm_df_model2$sex <- factor(midterm_df_model2$sex)
+midterm_df_model2$raceethn <- factor(midterm_df_model2$raceethn)
+midterm_df_model2$provider <- factor(midterm_df_model2$provider)
+midterm_df_model2$admtype <- factor(midterm_df_model2$admtype)
+midterm_df_model2$campus <- factor(midterm_df_model2$campus)
+midterm_df_model2$er_mode <- factor(midterm_df_model2$er_mode)
+midterm_df_model2$target <- factor(midterm_df_model2$target)
+midterm_df_model2$los <- as.numeric(midterm_df_model2$los)
+midterm_df_model2$service <- factor(midterm_df_model2$service)
+midterm_df_model2$payer <- factor(midterm_df_model2$payer)
+midterm_df_model2$total <- as.numeric(midterm_df_model2$total)
+```
+
+
+```{r}
+set.seed(2020)
+
+splitIndex <- createDataPartition(midterm_df_model2$target, p = .10, 
+                                  list = FALSE)
+df_train2 <- midterm_df_model2[ splitIndex,]
+df_test2 <- midterm_df_model2[-splitIndex,]
+
+```
+
+```{r}
+library(rpart) 
+
+tree_model2 <- rpart(target ~ ., data = df_train2,
+                 control = rpart.control(maxdepth = 3))
+```
+
+```{r}
+fancyRpartPlot(tree_model2)
+```
+
+
+```{r}
+tuneGrid = expand.grid(mtry = 2:4)
+
+
+trControl = trainControl(method = "cv",
+                         number = 5)
+
+forest_cv2 <- train(target~., data=df_train2, 
+                                method = "rf", 
+                                trControl = trControl,
+                                tuneGrid = tuneGrid)
+```
+
+```{r}
+plot(forest_cv2)
+```
+
+
+```{r}
+trControl = trainControl(method = "cv",
+                         number = 5)
+tuneGrid = expand.grid(mtry=2:4)
+parRF_cv2 <- train(target~., data=df_train2, 
+                    method = "parRF", 
+                    trControl = trControl,
+                    tuneGrid = tuneGrid)
+```
+
+```{r}
+plot(parRF_cv2)
+```
+
+
+```{r}
+tuneGrid = expand.grid(mtry = 2:4)
+
+
+trControl = trainControl(method = "cv",
+                         number = 50)
+
+cforest_cv2 <- train(target~., data=df_train2, 
+                                method = "cforest", 
+                                trControl = trControl,
+                                tuneGrid = tuneGrid)
+```
+
+```{r}
+plot(cforest_cv2)
+```
+
+```{r}
+results <- resamples(list(forest = forest_cv2,
+                          parRF = parRF_cv2,
+                          cforest = cforest_cv2))
+bwplot(results)
+```
+
+```{r}
+pred <- predict(parRF_cv2, df_test2)
+cm <- confusionMatrix(data = pred, reference = df_test2$target, positive = "old")
+cm$overall[1]
+```
+
+-------
