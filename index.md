@@ -26,8 +26,6 @@
 
 [Midterm](midterm.Rmd)
 
-[Midterm Presentation](Midterm Presentation.pdf)
-
 [Assingment 13](assingment13.html)
 
 [Final Question 1](https://kdoorley.shinyapps.io/Final_Project/)
@@ -40,4 +38,18 @@
 
 [Final Question 5](https://kdoorley.shinyapps.io/finalQuestion5/)
 
-[Final Question 6]
+[Final Question 6](https://kdoorley2.shinyapps.io/finalq6/)
+
+[Final Question 7](https://kdoorley2.shinyapps.io/finalq7/)
+
+[Final Question 8](https://kdoorley2.shinyapps.io/finalq8/)
+
+[Final Question 9](https://kdoorley2.shinyapps.io/finalq9/)
+
+[Final Question 10](https://kdoorley2.shinyapps.io/finalq10/)
+
+[Final Question 11]
+
+[Final Question 12]
+
+[Final Question 13]
