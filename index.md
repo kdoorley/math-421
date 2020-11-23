@@ -29,3 +29,15 @@
 [Midterm Presentation](Midterm Presentation.pdf)
 
 [Assingment 13](assingment13.html)
+
+[Final Question 1](https://kdoorley.shinyapps.io/Final_Project/)
+
+[Final Question 2](https://kdoorley.shinyapps.io/finalQuestion2/?_ga=2.26750589.1544447367.1606144161-2048739573.1604959869)
+
+[Final Question 3](https://kdoorley.shinyapps.io/finalQuestion3/?_ga=2.26750589.1544447367.1606144161-2048739573.1604959869)
+
+[Final Question 4](https://kdoorley.shinyapps.io/finalQuestion4/)
+
+[Final Question 5](https://kdoorley.shinyapps.io/finalQuestion5/)
+
+[Final Question 6]
