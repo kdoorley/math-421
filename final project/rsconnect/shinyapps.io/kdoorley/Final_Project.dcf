@@ -1,0 +1,12 @@
+name: Final_Project
+title: Final_Project
+username:
+account: kdoorley
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3197846
+bundleId: 3839545
+url: https://kdoorley.shinyapps.io/Final_Project/
+when: 1604960068.44289
+asMultiple: FALSE
+asStatic: FALSE

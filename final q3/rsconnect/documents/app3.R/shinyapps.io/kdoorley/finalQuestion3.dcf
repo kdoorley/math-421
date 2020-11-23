@@ -1,0 +1,12 @@
+name: finalQuestion3
+title: finalQuestion3
+username:
+account: kdoorley
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3198050
+bundleId: 3839670
+url: https://kdoorley.shinyapps.io/finalQuestion3/
+when: 1604961925.6053
+asMultiple: FALSE
+asStatic: FALSE
