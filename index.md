@@ -48,8 +48,8 @@
 
 [Final Question 10](https://kdoorley2.shinyapps.io/finalq10/)
 
-[Final Question 11]
+[Final Question 11](https://kdoorley3.shinyapps.io/finalq11/)
 
-[Final Question 12]
+[Final Question 12 and 13](https://kdoorley3.shinyapps.io/finalq12/)
 
-[Final Question 13]
+
