@@ -10,7 +10,7 @@ variables_names = names(d)
 
 ui <- fluidPage(
   
-  titlePanel("COVID-19 by Data Quality"),
+  titlePanel("AirBnb Visualization"),
   
   sidebarLayout(
     

@@ -1,0 +1,13 @@
+name: finalq11
+title: finalq11
+username:
+account: kdoorley3
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3290697
+bundleId: 3897021
+url: https://kdoorley3.shinyapps.io/finalq11/
+when: 1606169002.60408
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: test2.Rmd
