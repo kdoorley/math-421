@@ -1,0 +1,13 @@
+name: finalq12
+title: finalq12
+username:
+account: kdoorley3
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3294779
+bundleId: 3899969
+url: https://kdoorley3.shinyapps.io/finalq12/
+when: 1606228966.21407
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: test.R
